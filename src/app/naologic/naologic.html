@@ -1,0 +1,205 @@
+<div class="banner content"><img src="Naologic logo.png"></div>
+
+<h1 class="content" style="margin-top:45px; margin-bottom:26px">Work Orders</h1>
+
+<div class="bundled-items-left content">
+    <div class="timescale-label">Timescale</div>
+    <p-select [options]="zoomLevel()" [(ngModel)]="selectedZoom" (ngModelChange)="onZoomChange()" >
+        <ng-template let-zoomLevel #item>
+            <div class="flex items-center gap-2 selected">
+                <div>{{ zoomLevel }}</div>
+            </div>
+        </ng-template>
+    </p-select>
+</div>
+
+<div class="work-center content">
+    <div class="left-panel">
+        <div class="work-center-header">Work Center</div>
+        <div class="work-center-items">
+            @for( center of workCenters(); track center ) {
+                <div class="work-center-item work-center-row" 
+                     [class.hovered]="center.isHovered"
+                     (mouseenter)="center.isHovered = true"
+                     (mouseleave)="center.isHovered = false">{{ center.name }}</div>
+            }
+        </div>
+    </div>
+    <div class="gant-chart right-panel">
+        <div class="dates">
+            @for( column of dates; track column){
+
+                <div class="column">{{ column }}</div>
+            }
+        </div>
+        <div class="work-orders">
+            <!-- Grid background with vertical lines -->
+            <div class="grid-background">
+                @for( center of workCenters(); track center ) {
+                    <div class="grid-row">
+                        @for( column of dates; track column){
+                            <div class="grid-cell"></div>
+                        }
+                    </div>
+                }
+            </div>
+            
+            <!-- Work items positioned on top -->
+            <div class="work-items-layer">
+                @for( center of workCenters(); track center ) {
+                    <div class="work-center-row"
+                         [class.hovered]="center.isHovered"
+                         (mouseenter)="center.isHovered = true"
+                         (mouseleave)="center.isHovered = false"
+                         (click)="createNewWorkOrder(center)">
+                        @for( workOrder of center.workItems; track workOrder.ref.docId ) {
+                            <div class="work-item" 
+                                 [class]="getWorkOrderClass(workOrder.status)"
+                                 [style.left.px]="getWorkOrderLeft(workOrder.startDate)"
+                                 [style.width.px]="getWorkOrderWidth(workOrder.startDate, workOrder.endDate)"
+                                 (click)="$event.stopPropagation()">
+                                <span class="work-item-name">{{ workOrder.name }}</span>
+
+                                <span class="work-item-status">{{ workOrder.status }}</span>
+                                <div class="work-item-actions">
+                                    <button class="three-dot-menu" 
+                                            (click)="toggleDropdown(workOrder.ref.docId); $event.stopPropagation()"
+                                            [class.active]="isDropdownOpen(workOrder.ref.docId)">
+                                        <span>⋯</span>
+                                    </button>
+                                    @if (isDropdownOpen(workOrder.ref.docId)) {
+                                        <div class="dropdown-menu" 
+                                             (click)="$event.stopPropagation()">
+                                            <div class="dropdown-item" (click)="editWorkOrder(workOrder, center)">Edit</div>
+                                            <div class="dropdown-item" (click)="deleteWorkOrder(workOrder)">Delete</div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Work Order Details Drawer -->
+<p-drawer [(visible)]="drawerVisible" position="right" [modal]="true" [closable]="false" 
+          styleClass="drawer-custom" >
+    <ng-template #header>
+        <div class="drawer-header">
+            <div class="header-content">
+                <h2>{{ selectedWorkOrder ? 'Edit Work Order' : 'Create New Work Order' }}</h2>
+                <p class="form-subtitle">Specify the dates, name and status for this order</p>
+            </div>
+            <div class="form-actions">
+                <button type="button" 
+                        (click)="closeDrawer()" 
+                        class="btn-cancel">
+                    Cancel
+                </button>
+                <button type="button" 
+                        (click)="saveWorkOrder()" 
+                        class="btn-create">
+                    Create
+                </button>
+            </div>
+        </div>
+    </ng-template>
+    <ng-template #content>
+        @if (selectedWorkOrder || selectedWorkCenter) {
+            <form [formGroup]="workOrderForm" class="drawer-form">
+                
+                <div class="form-group">
+                    <label for="workOrderName" class="form-label">Work Order Name</label>
+                    <input id="workOrderName" 
+                           type="text" 
+                           formControlName="name"
+                           class="form-input"
+                           [class.error]="workOrderForm.get('name')?.invalid && workOrderForm.get('name')?.touched"
+                           placeholder="Acme Inc.">
+                    @if (workOrderForm.get('name')?.invalid && workOrderForm.get('name')?.touched) {
+                        <div class="error-message">
+                            @if (workOrderForm.get('name')?.errors?.['required']) {
+                                <span>Work Order Name is required</span>
+                            }
+                            @if (workOrderForm.get('name')?.errors?.['minlength']) {
+                                <span>Work Order Name must be at least 2 characters long</span>
+                            }
+                        </div>
+                    }
+                </div>
+                
+                <div class="form-group">
+                    <label for="workOrderStatus" class="form-label">Status</label>
+                    <p-select id="workOrderStatus" 
+                             formControlName="status"
+                             [options]="statusOptions" 
+                             placeholder="Select status"
+                             [class.error]="workOrderForm.get('status')?.invalid && workOrderForm.get('status')?.touched"
+                             class="form-select">
+                    </p-select>
+                    @if (workOrderForm.get('status')?.invalid && workOrderForm.get('status')?.touched) {
+                        <div class="error-message">
+                            <span>Please select a status</span>
+                        </div>
+                    }
+                </div>
+
+                <div class="form-group">
+                    <label for="endDate" class="form-label">End date</label>
+                    <input id="endDate" 
+                           type="date" 
+                           formControlName="endDate"
+                           class="form-input date-input"
+                           [class.error]="workOrderForm.get('endDate')?.invalid && workOrderForm.get('endDate')?.touched || (workOrderForm.errors?.['dateRange'] || workOrderForm.errors?.['overlap']) && (workOrderForm.get('startDate')?.touched || workOrderForm.get('endDate')?.touched)"
+                           placeholder="01.01.2026">
+                    @if (workOrderForm.get('endDate')?.invalid && workOrderForm.get('endDate')?.touched) {
+                        <div class="error-message">
+                            <span>End date is required</span>
+                        </div>
+                    }
+                    @if (workOrderForm.errors?.['dateRange'] && (workOrderForm.get('startDate')?.touched || workOrderForm.get('endDate')?.touched)) {
+                        <div class="error-message">
+                            <span>End date must be after start date</span>
+                        </div>
+                    }
+                    @if (workOrderForm.errors?.['overlap'] && (workOrderForm.get('startDate')?.touched || workOrderForm.get('endDate')?.touched)) {
+                        <div class="error-message">
+                            <span>Date range conflicts with existing work order</span>
+                        </div>
+                    }
+                </div>
+                
+                <div class="form-group">
+                    <label for="startDate" class="form-label">Start date</label>
+                    <input id="startDate" 
+                           type="date" 
+                           formControlName="startDate"
+                           class="form-input date-input"
+                           [class.error]="workOrderForm.get('startDate')?.invalid && workOrderForm.get('startDate')?.touched || (workOrderForm.errors?.['dateRange'] || workOrderForm.errors?.['overlap']) && (workOrderForm.get('startDate')?.touched || workOrderForm.get('endDate')?.touched)"
+                           placeholder="02.01.2026">
+                    @if (workOrderForm.get('startDate')?.invalid && workOrderForm.get('startDate')?.touched) {
+                        <div class="error-message">
+                            <span>Start date is required</span>
+                        </div>
+                    }
+                    @if (workOrderForm.errors?.['dateRange'] && (workOrderForm.get('startDate')?.touched || workOrderForm.get('endDate')?.touched)) {
+                        <div class="error-message">
+                            <span>Start date must be before end date</span>
+                        </div>
+                    }
+                    @if (workOrderForm.errors?.['overlap'] && (workOrderForm.get('startDate')?.touched || workOrderForm.get('endDate')?.touched)) {
+                        <div class="error-message">
+                            <span>Date range overlaps with another work order in this center</span>
+                        </div>
+                    }
+                </div>
+
+            </form>
+        }
+    </ng-template>
+</p-drawer>>
+
+

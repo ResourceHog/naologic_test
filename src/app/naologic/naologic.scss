@@ -1,0 +1,554 @@
+//I ignored width on the sketch to allow a greater degree of flexibility on different screen sizes.
+.banner {
+    height: 50px;
+    background-color: rgba(255,255,255,1);
+    align-items: center;
+    display: flex;
+}
+.content {
+    padding-left: 101px;
+}
+
+h1 {
+    font-size: 24px;
+    font-weight: 500;
+    font-style:medium;
+    color: rgba(3,9,41,1);
+
+}
+
+.bundled-items-left {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.timescale-label {
+    height: 25px;
+    border-radius: 5px 0px 0px 5px;
+    background-color: rgba(241,243,248,0.75);
+    align-items: center;
+    display: flex;
+    padding: 8px 4px 8px 5px;
+    //had to guess the box shadow values since they were not provided in the sketch
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.144);
+    color: rgba(104,113,150,1);
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.left-panel {
+    margin-top: 24px;
+    width: 380px;
+    border: solid 1px rgba(230, 235, 240, 1);
+}
+
+.work-center-header {
+    padding-top: 8px;
+    padding-left: 31px;
+    padding-bottom: 8px;
+    border: solid 1px rgba(230, 235, 240, 1);
+    border-bottom: none;
+    border-right: none;
+    color: rgba(104, 113, 150, 1);
+    font-size: 14px;
+    font-weight: 500;
+
+}
+
+.work-center-item {
+    padding: 16px 0px 16px 31px;
+    border-top: solid 1px rgba(230, 235, 240, 1);
+    transition: background-color 0.2s ease;
+}
+
+.work-center-item.hovered {
+    border-top: none;
+    background-color: rgba(250, 251, 253, 1);
+
+}
+
+.work-center-items .work-center-item:first-child {
+    padding-top: 28px;
+    height: auto;
+}
+
+.work-orders .work-center-row:first-child {
+    height: 62.5px;
+}
+
+.work-center {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.right-panel {
+    flex: 1;
+    overflow-x: auto;
+    min-width: 0;
+}
+.dates {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: row;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    min-width: max-content;
+
+    color: rgba(104, 113, 150, 1);
+
+    font-size: 14px;
+    font-weight: 500;
+
+
+    border-top: solid 1px rgba(230, 235, 240, 1);
+    border-bottom: solid 1px rgba(230, 235, 240, 1);
+}
+
+.column {
+    width: 113px;
+    min-width: 113px;
+    max-width: 113px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.work-center-row {
+    height: 48px;
+    position: relative;
+    min-width: max-content;
+    transition: background-color 0.2s ease;
+}
+
+.work-items-layer .work-center-row.hovered {
+    background-color: rgba(238, 240, 255, 1);
+}
+
+.work-orders {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: max-content;
+}
+
+.grid-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1;
+
+
+}
+
+.grid-row {
+    height: 48px;
+    display: flex;
+    flex-direction: row;
+}
+
+.grid-cell {
+    width: 113px;
+    min-width: 113px;
+    max-width: 113px;
+    flex-shrink: 0;
+    border-right: 1px solid rgba(230, 235, 240, 0.5);
+
+    background-color: rgba(247, 249, 252, 1);
+}
+
+.work-items-layer {
+    position: relative;
+    z-index: 2;
+    min-width: max-content;
+}
+
+.work-item {
+    position: absolute;
+    height: 38px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px;
+    color: white;
+    color: rgba(3, 9, 41, 1);
+    font-size: 14px;
+    font-weight: 400;
+    font-style: book;
+    z-index: 10;
+}
+
+.work-item:hover {
+    z-index: 20;
+}
+
+.work-item-name {
+    flex: 1;
+    margin-right: 8px;
+}
+
+.work-item-actions {
+    position: relative;
+    margin-left: 4px;
+    margin-right: 8px;
+}
+
+.three-dot-menu {
+    background: none;
+    border: none;
+    color: rgba(3, 9, 41, 0.6);
+    font-size: 16px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease, background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+}
+
+.work-item:hover .three-dot-menu {
+    opacity: 1;
+}
+
+.three-dot-menu:hover {
+    background-color: rgba(216, 220, 235, 1);
+    border-radius: 5px;
+    width: 24px;
+    height: 22px;
+
+}
+
+.three-dot-menu.active {
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    border: 1px solid rgba(230, 235, 240, 1);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 10000;
+    min-width: 120px;
+    overflow: hidden;
+    margin-top: 4px;
+}
+
+.dropdown-item {
+    padding: 8px 12px;
+    font-size: 13px;
+    color: rgba(3, 9, 41, 1);
+    cursor: pointer;
+    border-bottom: 1px solid rgba(240, 242, 247, 1);
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(247, 249, 252, 1);
+}
+
+.work-item-status {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    height: 22px;
+}
+
+
+
+.work-item.in-progress {
+    box-shadow: 0 0 0 1px rgba(222, 224, 255, 1);
+    background-color: rgba(237, 238, 255, 1);
+    .work-item-status {
+        background-color: rgba(214, 216, 255, 1);
+        color: rgba(62, 64, 219, 1);
+    }
+
+}
+
+.work-item.completed {
+    box-shadow: 0 0 0 1px rgba(209, 250, 179, 1);
+    background-color: rgba(248, 255, 243, 1);
+        .work-item-status {
+        background-color: rgba(225, 255, 204, 1);
+        color: rgba(8, 162, 104, 1);
+    }
+}
+
+.work-item.blocked {
+    box-shadow: 0 0 0 1px rgba(255, 245, 207, 1);
+
+    background-color: rgba(255, 252, 241, 1);
+        .work-item-status {
+        background-color: rgba(252, 238, 181, 1);
+        color: rgba(177, 54, 0, 1);
+    }
+}
+
+
+
+:host {
+    ::ng-deep .p-select {
+
+        height: 25px;
+        border-radius: 0px 5px 5px 0px;
+        border: none;
+        box-shadow: 0.5px 2px 2px rgba(0, 0, 0, 0.144);
+    }
+
+
+    ::ng-deep p-select:focus-visible {
+        border-radius: 0px 5px 5px 8px;
+        box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.144);
+        width: auto;
+    }
+    
+    ::ng-deep .p-select-label {
+        font-size: 13px;
+        font-weight: 500;
+        font-style: medium;
+        height: 25px;
+        color: rgba(62, 64, 219, 1);
+        padding: 4px 0px 4px 8px;
+    }
+
+    ::ng-deep .p-select-dropdown {
+        width: auto;
+        padding: 10.91px 6.53px  9.09px 8px;
+    }
+
+    ::ng-deep .p-component-overlay.p-component {
+        left: -60px;
+        width: 200px;
+        box-shadow: 0 0 0 1px rgba(104, 113, 150, 0.1) , 0 2.5px 3px -1.5px rgba(200, 207, 233, 1) , 0 4.5px 5px -1px rgba(216, 220, 235, 1);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 1);
+    }
+
+    ::ng-deep .p-select-option:not(.p-select-option-selected):not(.p-disabled):hover {
+        color: rgba(62, 64, 219, 1);
+        background-color: white;
+    }
+
+    ::ng-deep .p-select-option.p-select-option-selected {
+        color: rgba(62, 64, 219, 1);
+        background-color: white;
+    }
+
+    // Drawer Form Styles
+    ::ng-deep .drawer-custom {
+        width: 591px !important;
+    }
+
+    ::ng-deep .drawer-custom .p-drawer-content {
+        padding: 0;
+    }
+
+    ::ng-deep .drawer-custom .p-drawer-header {
+        border-bottom: 1px solid rgba(230, 235, 240, 1);
+        padding: 20px 24px;
+        font-size: 18px;
+        font-weight: 600;
+        color: rgba(3, 9, 41, 1);
+    }
+}
+
+.drawer-form {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    height: 100%;
+}
+
+.drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+}
+
+.header-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.drawer-header h2 {
+    color: rgba(47, 48, 89, 1);
+    font-family: CircularStd-Medium;
+    font-size: 20px;
+    font-weight: 500;
+    font-style: medium;
+    margin: 0px;
+}
+
+
+
+.form-subtitle {
+    color: rgba(107, 114, 126, 1);
+    font-size: 14px;
+    font-weight: 400;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-label {
+color: rgba(104, 113, 150, 1);
+font-family: CircularStd-Regular;
+font-size: 14px;
+font-weight: 500;
+
+}
+
+.form-input {
+    padding: 12px 16px;
+    border: 1px solid rgba(209, 213, 219, 1);
+    border-radius: 8px;
+    font-size: 14px;
+    color: rgba(3, 9, 41, 1);
+    background-color: white;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.form-input:focus {
+    border-color: rgba(99, 102, 241, 1);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.form-input.error {
+    border-color: rgba(239, 68, 68, 1);
+}
+
+.form-input.error:focus {
+    border-color: rgba(239, 68, 68, 1);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.error-message {
+    margin-top: 4px;
+    font-size: 12px;
+    color: rgba(239, 68, 68, 1);
+}
+
+.form-input::placeholder {
+    color: rgba(156, 163, 175, 1);
+}
+
+.date-input {
+    color: rgba(156, 163, 175, 1);
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.btn-cancel {
+    padding: 8px 16px;
+    border-radius: 7px;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    color: rgba(75, 85, 99, 1);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 1) , 0 1px 3px 0 rgba(200, 207, 233, 1);
+}
+
+.btn-cancel:hover {
+    background-color: rgba(249, 250, 251, 1);
+    border-color: rgba(156, 163, 175, 1);
+}
+
+.btn-create {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 7px;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(86, 89, 255, 1);
+    box-shadow: 0 0 0 1px rgba(86, 89, 255, 1) , 0 1px 3px 0 rgba(200, 207, 233, 1);
+
+
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-create:hover {
+    background-color: rgba(79, 70, 229, 1);
+}
+
+:host {
+    ::ng-deep .form-select .p-select {
+        width: 100%;
+        border: 1px solid rgba(209, 213, 219, 1);
+        border-radius: 8px;
+        background-color: white;
+    }
+
+    ::ng-deep .form-select .p-select.error {
+        border-color: rgba(239, 68, 68, 1);
+    }
+
+    ::ng-deep .form-select .p-select.error:not(.p-disabled).p-focus {
+        border-color: rgba(239, 68, 68, 1);
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+
+    ::ng-deep .form-select .p-select .p-select-label {
+        padding: 12px 16px;
+        font-size: 14px;
+        color: rgba(3, 9, 41, 1);
+    }
+
+    ::ng-deep .form-select .p-select:not(.p-disabled):hover {
+        border-color: rgba(156, 163, 175, 1);
+    }
+
+    ::ng-deep .form-select .p-select:not(.p-disabled).p-focus {
+        border-color: rgba(99, 102, 241, 1);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+}
+
+
+
+
